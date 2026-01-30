@@ -15,7 +15,7 @@ export function useRealtime(
   filter?: string
 ) {
   useEffect(() => {
-    let channel: RealtimeChannel;
+    let channel: RealtimeChannel | null = null;
 
     const subscribe = async () => {
       const channelName = `${table}:${filter || '*'}`;
