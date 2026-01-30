@@ -1,78 +1,45 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { useToast } from '@/hooks/useToast';
 
 export default function RegisterPage() {
-  const router = useRouter();
   const { success, error } = useToast();
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      // Sign up with Supabase Auth
-      const { data, error: signUpError } = await supabase.auth.signUp({
+      console.log('📧 Sending magic link to:', email);
+
+      // Send magic link via email - NO PASSWORD REQUIRED
+      const { error: signInError } = await supabase.auth.signInWithOtp({
         email,
-        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          data: {
+            full_name: fullName,
+          },
+        },
       });
 
-      if (signUpError) {
-        error(signUpError.message);
+      if (signInError) {
+        console.error('❌ Magic link send error:', signInError.message);
+        error(signInError.message);
         setIsLoading(false);
         return;
       }
 
-      if (data.user) {
-        console.log('✓ User created successfully:', data.user.id);
-
-        // Create profile in vigitckets_profiles table
-        console.log('📝 Attempting to insert profile with data:', {
-          id: data.user.id,
-          email,
-          full_name: fullName,
-          role: 'client',
-        });
-
-        const { data: profileData, error: profileError } = await supabase
-          .from('vigitckets_profiles')
-          .insert([
-            {
-              id: data.user.id,
-              email,
-              full_name: fullName,
-              role: 'client',
-            },
-          ]);
-
-        if (profileError) {
-          console.error('❌ Profile insert error:', {
-            message: profileError.message,
-            code: profileError.code,
-            details: profileError.details,
-            hint: profileError.hint,
-          });
-          error(`Failed to create profile: ${profileError.message}`);
-          setIsLoading(false);
-          return;
-        }
-
-        console.log('✓ Profile created successfully:', profileData);
-        success('Registration successful! Please check your email to verify your account.');
-
-        // Redirect to login after a short delay
-        setTimeout(() => {
-          router.push('/login');
-        }, 2000);
-      }
+      console.log('✓ Magic link sent successfully');
+      setEmailSent(true);
+      success('Magic link envoyé! Vérifiez votre email pour continuer.');
     } catch (err) {
       error('An unexpected error occurred');
       console.error(err);
@@ -89,65 +56,71 @@ export default function RegisterPage() {
             VigiTickets
           </h1>
           <p className="text-center text-slate-600 mb-8">
-            Créer un compte client
+            {emailSent ? 'Lien envoyé!' : 'Créer un compte client'}
           </p>
 
-          <form onSubmit={handleRegister} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Nom complet
-              </label>
-              <input
-                type="text"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                required
-                placeholder="Jean Dupont"
-                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                disabled={isLoading}
-              />
-            </div>
+          {!emailSent ? (
+            <>
+              <form onSubmit={handleRegister} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Nom complet
+                  </label>
+                  <input
+                    type="text"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    required
+                    placeholder="Jean Dupont"
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    disabled={isLoading}
+                  />
+                </div>
 
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Email
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                placeholder="vous@exemple.com"
-                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                disabled={isLoading}
-              />
-            </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    placeholder="vous@exemple.com"
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    disabled={isLoading}
+                  />
+                </div>
 
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Mot de passe
-              </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                placeholder="••••••••"
-                minLength={6}
-                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                disabled={isLoading}
-              />
-              <p className="text-xs text-slate-500 mt-1">Min. 6 caractères</p>
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full bg-blue-600 text-white font-medium py-2 rounded-lg hover:bg-blue-700 disabled:bg-slate-400 disabled:cursor-not-allowed transition-colors"
+                >
+                  {isLoading ? 'Envoi en cours...' : 'Recevoir un lien magique'}
+                </button>
+              </form>
+            </>
+          ) : (
+            <div className="text-center space-y-4">
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <p className="text-slate-700">
+                  Un lien de connexion a été envoyé à <strong>{email}</strong>
+                </p>
+              </div>
+              <div className="bg-blue-50 border border-blue-100 rounded-lg p-4">
+                <p className="text-sm text-slate-600">
+                  ✅ <strong>Pas de mot de passe!</strong> Cliquez sur le lien dans l'email pour créer votre compte et accéder directement à VigiTickets.
+                </p>
+              </div>
+              <button
+                onClick={() => setEmailSent(false)}
+                className="text-sm text-blue-600 hover:underline"
+              >
+                Retourner au formulaire
+              </button>
             </div>
-
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full bg-blue-600 text-white font-medium py-2 rounded-lg hover:bg-blue-700 disabled:bg-slate-400 disabled:cursor-not-allowed transition-colors"
-            >
-              {isLoading ? 'Inscription en cours...' : 'S\'inscrire'}
-            </button>
-          </form>
+          )}
 
           <div className="mt-6 pt-6 border-t border-slate-200">
             <p className="text-center text-slate-600 text-sm mb-4">
