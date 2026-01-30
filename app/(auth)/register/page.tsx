@@ -59,7 +59,6 @@ export default function RegisterPage() {
             code: profileError.code,
             details: profileError.details,
             hint: profileError.hint,
-            status: profileError.status,
           });
           error(`Failed to create profile: ${profileError.message}`);
           setIsLoading(false);
