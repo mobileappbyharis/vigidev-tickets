@@ -23,6 +23,25 @@ const timestamp = now.toISOString();
 
 // Create .env.build file with NEXT_PUBLIC_* vars
 // These will be picked up by Next.js build process
+// Read existing .env.production to preserve Supabase vars
+const envProdPath = path.join(__dirname, '../.env.production');
+let existingEnvProd = '';
+if (fs.existsSync(envProdPath)) {
+  existingEnvProd = fs.readFileSync(envProdPath, 'utf8');
+}
+
+// Append/update build variables to .env.production
+const envProdContent = existingEnvProd
+  .replace(/^NEXT_PUBLIC_BUILD_VERSION=.*$/m, '')
+  .replace(/^NEXT_PUBLIC_BUILD_TIMESTAMP=.*$/m, '')
+  .trim() + '\n' +
+`NEXT_PUBLIC_BUILD_VERSION=${newVersion}
+NEXT_PUBLIC_BUILD_TIMESTAMP=${timestamp}
+`;
+
+fs.writeFileSync(envProdPath, envProdContent, 'utf8');
+
+// Also create .env.build for reference
 const envBuildContent = `NEXT_PUBLIC_BUILD_VERSION=${newVersion}
 NEXT_PUBLIC_BUILD_TIMESTAMP=${timestamp}
 `;
@@ -36,4 +55,4 @@ process.env.NEXT_PUBLIC_BUILD_TIMESTAMP = timestamp;
 
 console.log(`✓ Build version bumped to: ${newVersion}`);
 console.log(`✓ Build timestamp: ${timestamp}`);
-console.log(`✓ Created .env.build with environment variables`);
+console.log(`✓ Updated .env.production and .env.build with environment variables`);
