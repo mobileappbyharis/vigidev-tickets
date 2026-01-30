@@ -15,7 +15,7 @@ export default function RootPage() {
     if (isLoading) return;
 
     if (!isAuthenticated) {
-      router.push('/auth/login');
+      router.push('/login');
       return;
     }
 
@@ -25,7 +25,7 @@ export default function RootPage() {
     } else if (isVigidev) {
       router.push('/vigidev/tickets');
     } else {
-      router.push('/auth/login');
+      router.push('/login');
     }
   }, [isLoading, isAuthenticated, isClient, isVigidev, router]);
 
