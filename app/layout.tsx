@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Toaster } from 'react-hot-toast';
+import { BuildInfo } from '@/components/BuildInfo';
 import '@/styles/globals.css';
 
 export const metadata: Metadata = {
@@ -29,6 +30,7 @@ export default function RootLayout({
       <body>
         {children}
         <Toaster position="top-right" />
+        <BuildInfo />
       </body>
     </html>
   );
