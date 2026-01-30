@@ -14,7 +14,15 @@ const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
 
 // Parse version (e.g., "1.0.0" -> [1, 0, 0])
 const versionParts = packageJson.version.split('.');
-const patchVersion = parseInt(versionParts[2] || 0) + 1;
+if (!versionParts[0] || !versionParts[1]) {
+  console.error('❌ Invalid version in package.json:', packageJson.version);
+  process.exit(1);
+}
+const patchVersion = parseInt(versionParts[2] || 0, 10) + 1;
+if (isNaN(patchVersion)) {
+  console.error('❌ Failed to parse patch version:', versionParts[2]);
+  process.exit(1);
+}
 const newVersion = `${versionParts[0]}.${versionParts[1]}.${patchVersion}`;
 
 // Get current timestamp
