@@ -3,22 +3,7 @@
   "devCommand": "npm run dev",
   "installCommand": "npm install",
   "framework": "nextjs",
-  "nodeVersion": "20.x",
-  "env": [
-    "NEXT_PUBLIC_SUPABASE_URL",
-    "NEXT_PUBLIC_SUPABASE_ANON_KEY",
-    "SUPABASE_SERVICE_ROLE_KEY",
-    "NEXT_PUBLIC_APP_URL",
-    "RESEND_API_KEY"
-  ],
-  "regions": ["cdg1", "iad1"],
-  "routes": [
-    {
-      "src": "/api/health",
-      "methods": ["GET"],
-      "dest": "/api/health"
-    }
-  ],
+  "regions": ["cdg1"],
   "headers": [
     {
       "source": "/(.*)",
@@ -36,13 +21,6 @@
           "value": "1; mode=block"
         }
       ]
-    }
-  ],
-  "redirects": [
-    {
-      "source": "/",
-      "destination": "/client/projects",
-      "permanent": false
     }
   ]
 }

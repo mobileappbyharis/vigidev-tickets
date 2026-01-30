@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import type { AuthChangeEvent } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabase';
 import type { AuthUser, UserProfile } from '@/types';
 
@@ -9,7 +9,6 @@ import type { AuthUser, UserProfile } from '@/types';
  * Hook to manage authentication state
  */
 export function useAuth() {
-  const router = useRouter();
   const [user, setUser] = useState<AuthUser | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -44,7 +43,9 @@ export function useAuth() {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
+    } = supabase.auth.onAuthStateChange(async (authEvent: AuthChangeEvent, session) => {
+      // Handle auth state changes (login, logout, token refresh, etc)
+      console.debug('[useAuth] Auth state changed:', authEvent);
       const authUser = session?.user || null;
       setUser(authUser);
 

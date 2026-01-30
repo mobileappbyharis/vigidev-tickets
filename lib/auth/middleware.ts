@@ -1,11 +1,11 @@
 import { type NextRequest, NextResponse } from 'next/server';
-import { createServerClient, serialize } from '@supabase/ssr';
+import { createServerClient } from '@supabase/ssr';
 
 /**
  * Middleware to refresh session using Supabase SSR
  */
 export async function updateSession(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({
+  const supabaseResponse = NextResponse.next({
     request,
   });
 
