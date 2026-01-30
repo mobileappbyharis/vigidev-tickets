@@ -32,8 +32,17 @@ export default function RegisterPage() {
       }
 
       if (data.user) {
+        console.log('✓ User created successfully:', data.user.id);
+
         // Create profile in vigitckets_profiles table
-        const { error: profileError } = await supabase
+        console.log('📝 Attempting to insert profile with data:', {
+          id: data.user.id,
+          email,
+          full_name: fullName,
+          role: 'client',
+        });
+
+        const { data: profileData, error: profileError } = await supabase
           .from('vigitckets_profiles')
           .insert([
             {
@@ -45,11 +54,19 @@ export default function RegisterPage() {
           ]);
 
         if (profileError) {
-          error('Failed to create profile');
+          console.error('❌ Profile insert error:', {
+            message: profileError.message,
+            code: profileError.code,
+            details: profileError.details,
+            hint: profileError.hint,
+            status: profileError.status,
+          });
+          error(`Failed to create profile: ${profileError.message}`);
           setIsLoading(false);
           return;
         }
 
+        console.log('✓ Profile created successfully:', profileData);
         success('Registration successful! Please check your email to verify your account.');
 
         // Redirect to login after a short delay
