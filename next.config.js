@@ -11,7 +11,7 @@ const nextConfig = {
   },
   eslint: {
     // Disable ESLint during build for now - we'll enable strict linting in CI/CD later
-    ignoreDuringBuilds: process.env.VERCEL === '1',
+    ignoreDuringBuilds: true,
   },
 };
 

@@ -4,7 +4,7 @@
 **Client** : Vigidev (Sécurité Électronique)
 **URL Supabase** : https://tzmilnltvvtsvdmrkhin.supabase.co
 **Repository** : https://github.com/mobileappbyharis/vigidev-tickets
-**Vercel Project** : pgmhaouassi@gmail.com
+**Hosting** : Firebase Hosting (GCP Platform)
 
 ---
 
@@ -65,9 +65,9 @@ Database        : PostgreSQL (Supabase Cloud)
 Storage         : Supabase Storage (bucket: vigitckets_attachments)
 Email           : Resend (via Supabase Edge Functions)
 Realtime        : Supabase Realtime (subscriptions)
-Hosting         : Google Cloud Run (ou Vercel pour MVP)
+Hosting         : Firebase Hosting (GCP Platform)
 CI/CD           : GitHub Actions
-Deployment      : Vercel (https://vercel.com avec pgmhaouassi@gmail.com)
+Deployment      : Firebase Hosting (auto-deploy via GitHub webhooks)
 
 Key Dependencies:
 - @supabase/supabase-js + @supabase/auth-helpers-nextjs
@@ -338,27 +338,27 @@ Durée vidéo max : 10 secondes
 ### PHASE 7️⃣ : Déploiement Production
 - Dockerfile optimisé
 - GitHub Actions CI/CD
-- Déploiement Vercel ou GCP Cloud Run
+- Déploiement Firebase Hosting
 - Documentation finale
 
 ---
 
-## ❓ Questions avant de commencer Phase 1 (Suite)
+## ✅ Configuration Confirmée
 
-### Git & Vercel
+### Git & Firebase
 1. **GitHub** : Username `mobileappbyharis` - OK ? ✅
-2. **Vercel** : Email `pgmhaouassi@gmail.com` - OK ? ✅
-3. **Premier commit** : Veux-tu que je fasse maintenant ? (git init, add, commit)
+2. **Firebase Hosting** : GCP Platform - OK ? ✅
+3. **Repository** : https://github.com/mobileappbyharis/vigidev-tickets - OK ? ✅
 
 ### Supabase
-4. **Clés confirmées** ? Anon key + Service role key fournis ✅
-5. **Prefix table** : `vigitckets_` (avec 'c') confirmé ? ✅
-6. **Bucket storage** : `vigitckets_attachments` OK ? ✅
+4. **Clés** : Anon key + Service role key configurées ✅
+5. **Prefix table** : `vigitckets_` (avec 'c') confirmé ✅
+6. **Bucket storage** : `vigitckets_attachments` confirmé ✅
 
-### Développement
-7. **Mode déploiement** : Vercel (MVP rapide) ou GCP Cloud Run (production) ?
-8. **Testing** : Tests unitaires/e2e ou juste testing manuel pour Phase 1 ?
-9. **Priorités** : Suivre l'ordre des phases ou tu veux une priorité spécifique ?
+### Infrastructure
+7. **Mode déploiement** : Firebase Hosting (GCP Platform) ✅
+8. **CI/CD** : GitHub Actions → Auto-deploy sur Firebase ✅
+9. **Tailwind** : v4 avec @tailwindcss/postcss ✅
 
 ---
 
@@ -384,7 +384,7 @@ Durée vidéo max : 10 secondes
 ### Accès Projet
 - Supabase Dashboard : https://supabase.com/dashboard/project/tzmilnltvvtsvdmrkhin
 - GitHub Repo : https://github.com/mobileappbyharis/vigidev-tickets
-- Vercel Dashboard : https://vercel.com
+- GCP Console : https://console.cloud.google.com
 
 ### Clés & Credentials
 ```
@@ -392,7 +392,7 @@ Supabase URL : https://tzmilnltvvtsvdmrkhin.supabase.co
 Anon Key : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9... (dans .env.local)
 Service Role : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9... (dans .env.local)
 GitHub Username : mobileappbyharis
-Vercel Email : pgmhaouassi@gmail.com
+Firebase Project : vigidev-tickets (GCP)
 ```
 
 ---
@@ -414,10 +414,10 @@ npm run format                     # Formate le code
 git status                         # Vérifie les changements
 git add .                          # Stage tous les fichiers
 git commit -m "Message descriptif" # Commit
-git push origin main               # Push vers GitHub
+git push origin main               # Push vers GitHub (auto-deploy via GitHub Actions)
 
-# Vercel deployment
-vercel deploy                      # Deploy vers Vercel
+# Firebase Hosting deployment
+npm run build && firebase deploy   # Build + Deploy vers Firebase Hosting
 ```
 
 ---

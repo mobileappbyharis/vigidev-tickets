@@ -10,7 +10,7 @@
 - **Nom** : VigiTickets
 - **Description** : Plateforme SaaS de gestion de tickets pour Vigidev (sécurité électronique)
 - **Repository** : https://github.com/mobileappbyharis/vigidev-tickets
-- **Vercel** : pgmhaouassi@gmail.com
+- **Hosting** : Firebase Hosting (GCP Platform)
 - **GitHub User** : mobileappbyharis
 
 ### Infrastructure
@@ -315,19 +315,22 @@ npm run build
 
 ## 🚀 Déploiement
 
-### Vercel (Recommandé pour MVP)
+### Firebase Hosting (GCP Platform)
 ```bash
-# Install Vercel CLI
-npm i -g vercel
+# Install Firebase CLI
+npm i -g firebase-tools
 
-# Login avec pgmhaouassi@gmail.com
-vercel login
+# Login avec votre compte Google/GCP
+firebase login
 
-# Deploy
-vercel
+# Build et Deploy
+npm run build
+firebase deploy
 ```
 
-### Docker (GCP Cloud Run)
+Pour la doc complète, voir `DEPLOYMENT.md`
+
+### Local Docker Testing
 ```bash
 docker build -t vigidev-tickets:latest .
 docker run -p 3000:3000 vigidev-tickets:latest

@@ -1,17 +1,17 @@
 'use client';
 
-import { useEffect, useCallback } from 'react';
+import { useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
-import type { RealtimeChannel } from '@supabase/supabase-js';
+import type { RealtimeChannel, RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 
 /**
  * Hook to subscribe to Supabase Realtime events
  */
 export function useRealtime(
   table: string,
-  onInsert?: (payload: any) => void,
-  onUpdate?: (payload: any) => void,
-  onDelete?: (payload: any) => void,
+  onInsert?: (payload: RealtimePostgresChangesPayload<any>) => void,
+  onUpdate?: (payload: RealtimePostgresChangesPayload<any>) => void,
+  onDelete?: (payload: RealtimePostgresChangesPayload<any>) => void,
   filter?: string
 ) {
   useEffect(() => {
@@ -30,7 +30,7 @@ export function useRealtime(
             table: table,
             ...(filter && { filter }),
           },
-          (payload) => onInsert?.(payload)
+          (payload: RealtimePostgresChangesPayload<any>) => onInsert?.(payload)
         )
         .on(
           'postgres_changes',
@@ -40,7 +40,7 @@ export function useRealtime(
             table: table,
             ...(filter && { filter }),
           },
-          (payload) => onUpdate?.(payload)
+          (payload: RealtimePostgresChangesPayload<any>) => onUpdate?.(payload)
         )
         .on(
           'postgres_changes',
@@ -50,7 +50,7 @@ export function useRealtime(
             table: table,
             ...(filter && { filter }),
           },
-          (payload) => onDelete?.(payload)
+          (payload: RealtimePostgresChangesPayload<any>) => onDelete?.(payload)
         )
         .subscribe();
     };

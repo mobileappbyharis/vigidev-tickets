@@ -212,7 +212,6 @@ node_modules/
 .env.local
 .env*.local
 *.log
-.vercel
 dist/
 build/
 
