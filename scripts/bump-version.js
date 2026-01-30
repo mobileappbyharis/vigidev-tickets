@@ -21,6 +21,10 @@ const newVersion = `${versionParts[0]}.${versionParts[1]}.${patchVersion}`;
 const now = new Date();
 const timestamp = now.toISOString();
 
+// Update package.json version to keep in sync
+packageJson.version = newVersion;
+fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2), 'utf8');
+
 // Create .env.build file with NEXT_PUBLIC_* vars
 // These will be picked up by Next.js build process
 // Read existing .env.production to preserve Supabase vars
@@ -55,4 +59,4 @@ process.env.NEXT_PUBLIC_BUILD_TIMESTAMP = timestamp;
 
 console.log(`✓ Build version bumped to: ${newVersion}`);
 console.log(`✓ Build timestamp: ${timestamp}`);
-console.log(`✓ Updated .env.production and .env.build with environment variables`);
+console.log(`✓ Updated package.json, .env.production and .env.build with environment variables`);
