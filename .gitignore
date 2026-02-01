@@ -45,3 +45,9 @@ Thumbs.db
 # logs
 *.log
 logs/
+
+# Firebase & Service Account credentials (NEVER commit these)
+*-service-account*.json
+*-v[0-9]-*.json
+firebase-key.json
+.firebase/
