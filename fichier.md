@@ -25,7 +25,7 @@
 - ✅ Dashboard analytique pour les admins
 - ✅ Notifications par email
 - ✅ Historique d'activité avec timeline
-- ✅ Déploiement sur Google Cloud Platform
+- ✅ Déploiement sur Vercel (CI/CD automatique via GitHub Actions)
 
 ---
 
@@ -35,7 +35,7 @@
 Frontend        : Next.js 14 (App Router) + TypeScript + Tailwind CSS v4
 Backend         : Supabase (PostgreSQL + Auth + Realtime + Storage)
 Email           : Resend ou SendGrid (via Edge Functions)
-Hosting         : Google Cloud Run (Next.js) + Supabase Cloud
+Hosting         : Vercel (Next.js) + Supabase Cloud
 Repository      : GitHub (mobileappbyharis/vigidev-tickets)
 Domain Vigidev  : vigidev-france.com (pour contexte)
 ```
@@ -786,14 +786,14 @@ git push origin main
 
 ---
 
-### PHASE 7️⃣ : Setup & Déploiement Google Cloud Platform
+### PHASE 7️⃣ : Setup & Déploiement Vercel
 
 #### Contexte
-Phases 1-6 complètes. Prêt pour production sur GCP.
+Phases 1-6 complètes. Prêt pour production sur Vercel avec CI/CD automatique.
 
 #### ✅ Tâches
 
-**1. Configuration Next.js pour GCP**
+**1. Configuration Next.js pour Vercel**
 ```typescript
 // next.config.ts
 import type { NextConfig } from 'next';
@@ -801,7 +801,7 @@ import type { NextConfig } from 'next';
 const config: NextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['tzmilnltvvtsvdmrkhin.supabase.co'],
+    domains: ['bgnzfhjsvldgejddzqtf.supabase.co'],
     unoptimized: process.env.NODE_ENV === 'production',
   },
 };
@@ -809,30 +809,25 @@ const config: NextConfig = {
 export default config;
 ```
 
-**2. Dockerfile pour Cloud Run**
-```dockerfile
-# Dockerfile
-FROM node:20-alpine AS base
-
-# Build stage
-FROM base AS builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-COPY . .
-RUN npm run build
-
-# Runtime stage
-FROM base AS runner
-WORKDIR /app
-
-ENV NODE_ENV=production
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
-
-EXPOSE 3000
-CMD ["node", "server.js"]
+**2. Configuration vercel.json**
+```json
+{
+  "buildCommand": "npm run build",
+  "devCommand": "next dev",
+  "installCommand": "npm ci",
+  "framework": "nextjs",
+  "outputDirectory": ".next",
+  "env": {
+    "NEXT_PUBLIC_SUPABASE_URL": "@next_public_supabase_url",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@next_public_supabase_anon_key"
+  },
+  "regions": ["fra1"],
+  "functions": {
+    "app/api/**": {
+      "maxDuration": 60
+    }
+  }
+}
 ```
 
 **3. Health Check**
@@ -843,74 +838,64 @@ export async function GET() {
 }
 ```
 
-**4. Variables d'Env GCP**
+**4. Variables d'Env Vercel (GitHub Secrets)**
 ```
-NEXT_PUBLIC_SUPABASE_URL=https://tzmilnltvvtsvdmrkhin.supabase.co
+VERCEL_TOKEN=vrv_xxxx...
+VERCEL_ORG_ID=team_xxxx... (ou username)
+VERCEL_PROJECT_ID=prj_GJOuzLmBDzFZciMDbmAYKjRQmqrO
+NEXT_PUBLIC_SUPABASE_URL=https://bgnzfhjsvldgejddzqtf.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJxxx...
-SUPABASE_SERVICE_ROLE_KEY=eyJxxx...
-NEXT_PUBLIC_APP_URL=https://tickets.vigidev.com
+NEXT_PUBLIC_APP_URL=https://vigitickets.vercel.app
 ```
 
-**5. Déploiement Cloud Run**
-```bash
-# Authentifier avec gcloud
-gcloud auth login
-gcloud config set project PROJECT_ID
-
-# Build et push image
-gcloud builds submit --tag gcr.io/PROJECT_ID/vigidev-tickets
-
-# Déployer
-gcloud run deploy vigidev-tickets \
-  --image gcr.io/PROJECT_ID/vigidev-tickets \
-  --platform managed \
-  --region europe-west1 \
-  --allow-unauthenticated \
-  --set-env-vars NEXT_PUBLIC_SUPABASE_URL=xxx,NEXT_PUBLIC_SUPABASE_ANON_KEY=xxx \
-  --memory 512Mi \
-  --cpu 1
-```
-
-**6. Domain Custom GCP**
-- Connecter domaine personnalisé dans Cloud Run
-- DNS pointing vers GCP Load Balancer
-- SSL auto avec Certificate Manager
-
-**7. CI/CD GitHub Actions**
+**5. GitHub Actions Workflow**
 ```yaml
-# .github/workflows/deploy.yml
-name: Deploy to Cloud Run
+# .github/workflows/vercel-deploy.yml
+name: Deploy to Vercel
 
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
-      - uses: google-github-actions/setup-gcloud@v1
-
-      - run: gcloud builds submit --tag gcr.io/${{ env.PROJECT_ID }}/vigidev-tickets
-      - run: |
-          gcloud run deploy vigidev-tickets \
-            --image gcr.io/${{ env.PROJECT_ID }}/vigidev-tickets \
-            --region europe-west1 \
-            --update-env-vars NEXT_PUBLIC_SUPABASE_URL=${{ secrets.SUPABASE_URL }}
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run type-check
+      - run: npm run lint
+      - run: npm run build
+      - uses: amondnet/vercel-action@v25.2.0
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          production: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
 ```
 
-**8. Documentation Déploiement**
-- Créer `DEPLOYMENT.md` avec :
-  - Instructions setup GCP
-  - Variables d'env requises
-  - Commandes build local/prod
-  - Troubleshooting
+**6. Domain Custom**
+- Vercel configure SSL automatiquement
+- Ajoute un domaine custom dans Vercel Dashboard
+- DNS CNAME pointing vers Vercel (auto-managed)
 
-**9. README Mise à jour**
+**7. Documentation Déploiement**
+- Voir `VERCEL_SETUP.md` pour instructions détaillées
+- Voir `DEPLOYMENT_CHANGES.md` pour les changements de config
+- Variables d'env requises : 5 secrets GitHub
+- Troubleshooting en cas d'erreur
+
+**8. README Mise à jour**
 ```markdown
 # Vigidev Tickets Platform
 
@@ -920,7 +905,8 @@ Plateforme SaaS de gestion de tickets pour Vigidev.
 - Frontend: Next.js 14 + TypeScript + Tailwind
 - Backend: Supabase + PostgreSQL
 - Email: Resend
-- Hosting: Google Cloud Run
+- Hosting: Vercel (avec CI/CD GitHub Actions)
+- URL Production: https://vigitickets.vercel.app
 
 ## Setup Local
 \`\`\`bash
@@ -930,16 +916,16 @@ npm run dev
 \`\`\`
 
 ## Déploiement
-Voir [DEPLOYMENT.md](./DEPLOYMENT.md)
+Voir [VERCEL_SETUP.md](./VERCEL_SETUP.md) pour instructions complètes.
 
 ## License
 Propriétaire
 ```
 
-**10. Commits Finaux**
+**9. Commits Finaux**
 ```bash
 git add .
-git commit -m "Phase 7 complete - GCP Cloud Run Deployment Ready"
+git commit -m "Phase 7 complete - Vercel Deployment with GitHub Actions"
 git push origin main
 ```
 
@@ -954,8 +940,8 @@ Avant de lancer Claude Code sur les phases, confirme :
 2. **Premier admin** : Comment tu veux initialiser le premier compte admin ? (manuel en BD, lien spécial, script seed ?)
 
 ### Infrastructure
-3. **Domaine** : Tu as un domaine GCP/custom pour cette plateforme ? Ou on commence avec le domaine auto Cloud Run ?
-4. **Région GCP** : Tu veux `europe-west1` (Belgique) ou une autre ?
+3. **Domaine custom** : Tu veux un domaine custom pour cette plateforme ? Ou garder `vigitickets.vercel.app` ?
+4. **Déploiement** : Vercel (déjà configuré ✅) avec GitHub Actions automatique
 
 ### Email
 5. **Domaine email** : Tu as accès à un domaine pour envoyer les emails ? (Resend demande un domaine pour la production)
@@ -985,7 +971,7 @@ Avant de lancer Claude Code sur les phases, confirme :
 ## 📚 Références
 
 - Vigidev : vigidev-france.com
-- Supabase Dashboard : https://supabase.com/dashboard/project/tzmilnltvvtsvdmrkhin
+- Supabase Dashboard : https://supabase.com/dashboard/project/bgnzfhjsvldgejddzqtf
 - GitHub Repo : https://github.com/Zie619/vigidev-tickets
 - Docs Next.js 14 : https://nextjs.org/docs
 - Docs Supabase : https://supabase.com/docs

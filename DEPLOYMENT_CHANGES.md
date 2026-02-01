@@ -88,7 +88,7 @@ Migration complète de **Firebase Hosting → Vercel** avec CI/CD automatique vi
 
 | Secret | Valeur | Où le trouver |
 |--------|--------|---------------|
-| `NEXT_PUBLIC_SUPABASE_URL` | `https://tzmilnltvvtsvdmrkhin.supabase.co` | Supabase Dashboard → Settings → API |
+| `NEXT_PUBLIC_SUPABASE_URL` | `https://bgnzfhjsvldgejddzqtf.supabase.co` | Supabase Dashboard → Settings → API |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | `eyJ...` | Supabase Dashboard → Settings → API → Anon key |
 
 ---

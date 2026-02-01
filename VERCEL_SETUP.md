@@ -83,14 +83,14 @@ Secret value: prj_GJOuzLmBDzFZciMDbmAYKjRQmqrO
 ### 4️⃣ NEXT_PUBLIC_SUPABASE_URL
 
 **Où le trouver :**
-1. Va sur : https://supabase.com/dashboard/project/tzmilnltvvtsvdmrkhin
+1. Va sur : https://supabase.com/dashboard/project/bgnzfhjsvldgejddzqtf
 2. **Settings** → **API** (en bas à gauche)
 3. Cherche **Project URL** (commence par `https://`)
 
 **À ajouter dans GitHub :**
 ```
 Secret name: NEXT_PUBLIC_SUPABASE_URL
-Secret value: https://tzmilnltvvtsvdmrkhin.supabase.co
+Secret value: https://bgnzfhjsvldgejddzqtf.supabase.co
 ```
 
 ---
