@@ -42,21 +42,22 @@ Le fichier `firebase.json` est déjà configuré avec :
 
 ### Environment Variables Setup
 
-1. Go to [GCP Console](https://console.cloud.google.com)
-2. Select your Firebase project
-3. Firebase → Settings → Environment Configuration
-4. Add these environment variables for build process:
+**IMPORTANT**: Never commit real credentials to GitHub. Always use `.env.local` for secrets.
 
-```env
-# Supabase Configuration
-NEXT_PUBLIC_SUPABASE_URL=https://bgnzfhjsvldgejddzqtf.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJnbnpmaGpzdmxkZ2VqZGR6cXRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk3NzY1MDMsImV4cCI6MjA4NTM1MjUwM30.ybXf98scocjBI0nqORsQQyqEoyOfAYUpo_k1Hd5GYwE
-SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJnbnpmaGpzdmxkZ2VqZGR6cXRmIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2OTc3NjUwMywiZXhwIjoyMDg1MzUyNTAzfQ.YcYp1yrzsIjrWCS83qNB-Xeza_nsNzBN2vEQ7BszT8k
+1. Copy `.env.example` to `.env.local`
+2. Add your real credentials to `.env.local` (this file is in `.gitignore`)
+3. Never commit `.env.local` - it's for local development only
 
-# Firebase/GCP Configuration
-NEXT_PUBLIC_APP_URL=https://navi-f913a.web.app (or custom domain)
-RESEND_API_KEY=re_xxxxx (optionnel, ajouter après setup Resend)
-```
+See `.env.local` for the actual environment variables needed:
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `NEXT_PUBLIC_APP_URL`
+- `RESEND_API_KEY`
+
+For GitHub Actions / Firebase CI/CD, add these as secrets in your GitHub repository:
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
 ### Custom Domain (Optional)
 
