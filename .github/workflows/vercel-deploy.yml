@@ -43,4 +43,4 @@ jobs:
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           scope: ${{ secrets.VERCEL_ORG_ID }}
           working-directory: ./
-          production: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+          vercel-args: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' && '--prod' || '' }}
