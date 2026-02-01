@@ -3,6 +3,7 @@
 // next.config.js
 var nextConfig = {
   reactStrictMode: true,
+  output: "standalone",
   images: {
     domains: ["tzmilnltvvtsvdmrkhin.supabase.co"]
   },

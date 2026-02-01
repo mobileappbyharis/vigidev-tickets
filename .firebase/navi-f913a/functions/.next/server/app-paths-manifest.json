@@ -1,8 +1,9 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
-  "/page": "app/page.js",
-  "/auth/callback/route": "app/auth/callback/route.js",
   "/api/health/route": "app/api/health/route.js",
+  "/auth/callback/route": "app/auth/callback/route.js",
+  "/page": "app/page.js",
+  "/auth/setup/page": "app/auth/setup/page.js",
   "/(auth)/register/page": "app/(auth)/register/page.js",
   "/(auth)/invite/page": "app/(auth)/invite/page.js",
   "/(auth)/login/page": "app/(auth)/login/page.js"

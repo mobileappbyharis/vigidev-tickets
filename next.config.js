@@ -2,7 +2,6 @@
 
 const nextConfig = {
   reactStrictMode: true,
-  output: 'standalone',
   images: {
     domains: ['tzmilnltvvtsvdmrkhin.supabase.co'],
   },

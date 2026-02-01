@@ -2,297 +2,180 @@
 
 ---
 
-## Firebase Hosting (GCP Platform - Production)
+## Vercel Deployment (Production)
 
-### Option 1 : Via CLI Firebase
+VigiTickets est déployé sur **Vercel** pour un déploiement rapide, fiable et facile à gérer.
 
+### Option 1 : Déploiement automatique via GitHub Actions (Recommandé)
+
+Le workflow `.github/workflows/vercel-deploy.yml` s'occupe du déploiement automatique :
+
+- **Sur `main`** : Déploiement en production
+- **Sur `develop`** : Déploiement en staging
+- **Sur les PR** : Déploiement de preview automatique
+
+À chaque `git push` :
 ```bash
-# Install Firebase CLI globally (si pas déjà installé)
-npm i -g firebase-tools
-
-# Login avec votre compte Google/GCP
-firebase login
-
-# Initialize Firebase project dans le dossier du projet
-firebase init hosting
-
-# Réponds aux questions :
-# - Which Firebase project? → Select your GCP project
-# - Public directory? → .next/static (déjà configuré dans firebase.json)
-# - Configure as single-page app? → Yes
-# - Setup GitHub Actions? → Yes (optional, pour auto-deploy)
-# - Set up automatic builds and deploys with GitHub? → Yes
-
-# Build the Next.js project
-npm run build
-
-# Deploy to Firebase Hosting
-firebase deploy
-
-# Vérifiez la deployed app
-firebase open hosting:site
+git push origin main
+# → GitHub Actions déclenche Vercel
+# → Build + Test + Déploiement en ~2-3 min
+# → App live à https://vigitickets.vercel.app
 ```
 
-### Configuration firebase.json
+### Option 2 : Déploiement manuel via CLI (Rapide)
 
-Le fichier `firebase.json` est déjà configuré avec :
-- Public directory: `.next/static`
-- Rewrites pour Single-Page App
-- Security headers (X-Content-Type-Options, X-Frame-Options, X-XSS-Protection)
+Pour tester rapidement en local :
 
-### Environment Variables Setup
+```bash
+# 1. Install Vercel CLI (si pas déjà fait)
+npm i -g vercel
+
+# 2. Login
+vercel login
+
+# 3. Build et déployer
+npm run build
+vercel deploy --prod
+```
+
+C'est beaucoup plus rapide que les GitHub Actions (2-3 min au lieu de 10).
+
+### Configuration requise
+
+**GitHub Secrets** (à configurer une seule fois) :
+
+1. Va sur : https://github.com/mobileappbyharis/vigidev-tickets
+2. Settings → Secrets and variables → Actions
+3. Ajoute ces secrets :
+
+```
+VERCEL_TOKEN=<ton-token-vercel>
+VERCEL_ORG_ID=<ton-org-id>
+VERCEL_PROJECT_ID=<ton-project-id>
+NEXT_PUBLIC_SUPABASE_URL=https://bgnzfhjsvldgejddzqtf.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<ta-cle-anon>
+```
+
+#### Comment obtenir les tokens Vercel :
+
+1. **VERCEL_TOKEN** : https://vercel.com/account/tokens
+   - Créer un nouveau token
+   - Copy-paste dans GitHub Secrets
+
+2. **VERCEL_ORG_ID** et **VERCEL_PROJECT_ID** :
+   - Une fois le projet connecté sur Vercel
+   - Settings → Project Settings → ID (en haut de la page)
+
+### Environment Variables
 
 **IMPORTANT**: Never commit real credentials to GitHub. Always use `.env.local` for secrets.
 
-1. Copy `.env.example` to `.env.local`
-2. Add your real credentials to `.env.local` (this file is in `.gitignore`)
-3. Never commit `.env.local` - it's for local development only
+**Localement** (`.env.local` - NOT committed):
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://bgnzfhjsvldgejddzqtf.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key_here
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key_here
+```
 
-See `.env.local` for the actual environment variables needed:
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- `SUPABASE_SERVICE_ROLE_KEY`
-- `NEXT_PUBLIC_APP_URL`
-- `RESEND_API_KEY`
-
-For GitHub Actions / Firebase CI/CD, add these as secrets in your GitHub repository:
+**En production** (via Vercel Dashboard ou GitHub Secrets):
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
 ### Custom Domain (Optional)
 
-1. Firebase Console → Hosting
-2. Click "Add custom domain"
-3. Enter `tickets.vigidev.com`
-4. Follow DNS verification steps (add TXT record)
-5. Add CNAME record pointing to Firebase Hosting
-6. Firebase SSL auto via Google-managed certificates
+1. Vercel Dashboard → Settings → Domains
+2. Add custom domain → `tickets.vigidev.com`
+3. Follow DNS setup instructions (add CNAME record)
+4. SSL auto-configured by Vercel
 
-### Auto-Deploy Setup with GitHub Actions
+### Monitoring & Logs
 
-GitHub Actions workflow is automatically created by `firebase init hosting --interactive`
+**Vercel Dashboard** : https://vercel.com/dashboard
 
-À chaque `git push` sur `main` :
-- GitHub Actions triggers Firebase build
-- Build succeeds → Firebase automatically deploys to Hosting
-- Live site updates with zero downtime
+- View deployment history
+- Check build logs
+- Monitor performance
+- View analytics
 
-Optional: Manually configure `.github/workflows/firebase-hosting-pull-request.yml` and `.github/workflows/firebase-hosting-merge.yml`
+**GitHub Actions** : https://github.com/mobileappbyharis/vigidev-tickets/actions
 
----
+- Check workflow status
+- View build logs in detail
 
-## Cloud Run (Alternative for API/Backend)
+### Preview Deployments
 
-Firebase Hosting is used for static Next.js frontend. Cloud Run can be used separately for:
-- Custom API endpoints (Supabase Edge Functions recommended instead)
-- Microservices or background jobs
-- WebSocket servers for real-time features
+Chaque PR automatiquement :
+1. Génère un URL de preview unique
+2. Deploy la version PR avec les env vars
+3. Affiche le lien dans les commentaires PR
+4. Supprimé automatiquement quand la PR est fermée
 
-For now, Supabase Edge Functions handle all backend logic:
-- Notifications (via Deno runtime)
-- Webhooks
-- Custom business logic
+Parfait pour tester avant de merger !
 
-**Note**: Direct Cloud Run deployment not needed for VigiTickets Phase 1-2. Use Firebase Hosting for frontend + Supabase Edge Functions for backend.
+### Rollback
 
----
+Si quelque chose se passe mal :
 
-## GitHub Actions CI/CD
+1. **Via Vercel Dashboard** :
+   - Hosting → Deployments
+   - Cliquer sur une version antérieure
+   - Click "Promote to Production"
 
-Firebase Hosting setup via `firebase init hosting --interactive` creates workflows automatically.
+2. **Via git** :
+   - `git revert <commit-sha>`
+   - `git push origin main`
+   - → Vercel redéploie automatiquement
 
-### Manual CI/CD Setup (if needed)
+### Performance
 
-Create `.github/workflows/deploy.yml` for manual control:
+Vercel optimise automatiquement :
+- ✅ Image optimization
+- ✅ Code splitting
+- ✅ CDN global caching
+- ✅ Zero-downtime deployments
+- ✅ Automatic scaling
 
-```yaml
-name: Deploy to Firebase Hosting
+### Troubleshooting
 
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+**Build fails** :
+1. Check `.env` variables in Vercel dashboard
+2. Check `npm run build` locally
+3. Check GitHub Actions logs
 
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
+**Slow performance** :
+1. Check Supabase query performance
+2. Enable Vercel Analytics
+3. Check image optimization
 
-      - name: Use Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Type check
-        run: npm run type-check
-
-      - name: Lint
-        run: npm run lint
-
-      - name: Build
-        run: npm run build
-
-      - name: Deploy to Firebase Hosting
-        uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          channelId: live
-          projectId: your-firebase-project-id
-```
-
-### Setup Firebase Service Account for GitHub Actions
-
-1. GCP Console → Service Accounts
-2. Create service account with roles: Firebase Admin, Firebase Hosting Admin
-3. Create JSON key file
-4. GitHub Repo → Settings → Secrets and variables → Actions
-5. Add secret `FIREBASE_SERVICE_ACCOUNT` with the JSON key content
+**Domain not working** :
+1. Check DNS records are propagated (wait 24h)
+2. Check CNAME points to `cname.vercel-dns.com`
+3. Check domain is verified in Vercel dashboard
 
 ---
 
-## Monitoring & Logs
+## Supabase Configuration
 
-### Firebase Console
-- Dashboard shows deployment history, build logs, performance
-- Check failed deployments in Activity section
-- Real-time traffic monitoring via Analytics
+Database: `bgnzfhjsvldgejddzqtf`
+URL: https://supabase.com/dashboard/project/bgnzfhjsvldgejddzqtf
 
-### Supabase Logs
-- Dashboard → Logs → Voir les erreurs API/Auth
-- Database performance via Database menu
-- Realtime subscriptions monitoring
-
-### Error Tracking
-- Setup Sentry (optional) for production errors
-- Firebase integrations → Add error reporting
-- Browser console errors via client-side monitoring
-
----
-
-## Health Check & Status
-
-### Local Test
-```bash
-curl http://localhost:3000/api/health
-# Response: {"status":"ok","timestamp":"2025-01-30T...","environment":"development"}
-```
-
-### Production Test
-```bash
-curl https://your-project.web.app/api/health
-curl https://tickets.vigidev.com/api/health (if custom domain configured)
-```
-
----
-
-## Rollback
-
-### Firebase Hosting
-
-```bash
-# List all deployed versions
-firebase hosting:channel:list
-
-# Rollback to previous deployment
-firebase hosting:clone CHANNEL_ID
-
-# Or via Console:
-# 1. Firebase Console → Hosting
-# 2. Click "Releases"
-# 3. Find previous release
-# 4. Click menu → "Activate version"
-```
-
----
-
-## Performance Optimization
-
-### Firebase Hosting
-- CDN edge caching for all static assets globally
-- Automatic compression (gzip, brotli)
-- HTTP/2 server push for optimal delivery
-- HTTP caching headers configured in firebase.json
-
-### Next.js Level
-- Image optimization automatic via Next.js
-- Static generation (SSG) for public pages
-- Server-side rendering (SSR) for dynamic content
-- Code splitting and lazy loading
-
-### Supabase
-- Enable connection pooling for DB queries
-- Setup caching policies for Realtime subscriptions
-- Monitor DB performance in logs and metrics
-- Use indexed columns for frequent queries
-
----
-
-## Troubleshooting
-
-### Build Fails on Firebase
-1. Check logs in Firebase Console → Build
-2. Check environment variables are set in `.env.local`
-3. Run `npm run build` locally to debug
-4. Commit fix → Push → GitHub Actions auto-redeploys
-
-### Blank Page / 500 Error
-1. Check `.env` variables are correct and loaded
-2. Check Supabase is accessible from Firebase Hosting (no IP blocking)
-3. Check browser console (F12) for errors
-4. Check Firebase Hosting activity logs
-
-### Slow Performance
-1. Check Supabase query performance and indexes
-2. Check image optimization in Next.js
-3. Enable Firebase Performance Monitoring
-4. Check if database queries use proper indexes
-5. Verify CDN caching headers in firebase.json
-
-### CORS Errors
-1. Check Supabase CORS settings in project settings
-2. Add Firebase domain to allowed origins in Supabase
-3. Check API routes have proper CORS headers
-4. Verify Authorization headers in requests
+All tables have Row-Level Security (RLS) enabled. See FOUNDATIONS.md for details.
 
 ---
 
 ## Checklist Pré-Déploiement
 
-- [ ] `.env.local` contient toutes les clés Supabase
-- [ ] `npm run build` réussit localement
-- [ ] `npm run type-check` passe sans erreurs
-- [ ] Pas d'erreurs console en `npm run dev`
-- [ ] Tests manuels complètent (si appliquable)
-- [ ] Tous les commits sont pushés à GitHub
-- [ ] `firebase init hosting` completed and workflows created
-- [ ] GitHub secrets configured for Firebase deployment
-- [ ] Health check `/api/health` répond 200 localement
-- [ ] Supabase Edge Functions tested locally
+- [ ] `.env.local` configuré localement
+- [ ] `npm run build` réussit
+- [ ] `npm run type-check` passe
+- [ ] Pas d'erreurs console
+- [ ] Tests manuels complets
+- [ ] Tous les commits pushés
+- [ ] GitHub Secrets configurés
+- [ ] Vercel tokens configurés
 
 ---
 
-## Support & Issues
-
-### Resources
-- Firebase Hosting Docs: https://firebase.google.com/docs/hosting
-- Next.js Deployment: https://nextjs.org/docs/deployment
-- Supabase Docs: https://supabase.com/docs
-- GCP Console: https://console.cloud.google.com
-
-### Common Issues
-- See FOUNDATIONS.md "Debugging" section
-- Check GitHub Issues for solutions
-- Check Firebase Hosting activity logs for deployment errors
-- Ask Claude for help with deployment or configuration
-
----
-
-**Version**: 1.1 (Janvier 2025)
-**Updated**: Migrated from Vercel to Firebase Hosting (GCP Platform)
-**Status**: Ready for Phase 1 Production Deployment
+**Version**: 2.0 (Février 2026)
+**Updated**: Migrated to Vercel from Firebase
+**Status**: Ready for Production Deployment
