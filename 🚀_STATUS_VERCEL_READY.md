@@ -45,7 +45,7 @@
 | Secret | Value | Where to get it |
 |--------|-------|-----------------|
 | `VERCEL_TOKEN` | `vrv_xxxx...` | https://vercel.com/account/tokens |
-| `VERCEL_ORG_ID` | `team_xxxx...` | Via API or Vercel dashboard |
+| `VERCEL_ORG_ID` | `team_lf1DbQXhLsC49vm5h12ZussN` ✅ | (Récupéré) |
 | `VERCEL_PROJECT_ID` | `prj_GJOuzLmBDzFZciMDbmAYKjRQmqrO` | ✅ Pre-configured |
 | `NEXT_PUBLIC_SUPABASE_URL` | `https://bgnzfhjsvldgejddzqtf.supabase.co` | ✅ Supabase Dashboard |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | `eyJ...` | Supabase Dashboard → Settings → API |

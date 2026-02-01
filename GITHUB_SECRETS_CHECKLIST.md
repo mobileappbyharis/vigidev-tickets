@@ -46,7 +46,7 @@ curl -H "Authorization: Bearer vrv_xxxx" https://api.vercel.com/v2/teams
 **Status**: ⏳ À faire
 ```
 Secret name: VERCEL_ORG_ID
-Secret value: team_xxxxxxxxxxxxxxxx (ou ton username)
+Secret value: team_lf1DbQXhLsC49vm5h12ZussN
 ```
 
 ---

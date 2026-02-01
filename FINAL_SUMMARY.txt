@@ -57,8 +57,7 @@ Documentation:
     Format: vrv_xxxx...
 
   Secret #2: VERCEL_ORG_ID
-    Où: Vercel Dashboard ou API
-    Format: team_xxxx... ou username
+    Valeur: team_lf1DbQXhLsC49vm5h12ZussN ✅
 
   Secret #3: VERCEL_PROJECT_ID
     Valeur: prj_GJOuzLmBDzFZciMDbmAYKjRQmqrO ✅ (préfilled)

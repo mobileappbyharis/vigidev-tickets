@@ -52,7 +52,7 @@ Lien : https://github.com/mobileappbyharis/vigidev-tickets/settings/secrets/acti
 | Secret | Valeur |
 |--------|--------|
 | `VERCEL_TOKEN` | De https://vercel.com/account/tokens |
-| `VERCEL_ORG_ID` | De Vercel Dashboard |
+| `VERCEL_ORG_ID` | `team_lf1DbQXhLsC49vm5h12ZussN` ✅ |
 | `VERCEL_PROJECT_ID` | `prj_GJOuzLmBDzFZciMDbmAYKjRQmqrO` ✅ |
 | `NEXT_PUBLIC_SUPABASE_URL` | `https://bgnzfhjsvldgejddzqtf.supabase.co` ✅ |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | De Supabase Dashboard |

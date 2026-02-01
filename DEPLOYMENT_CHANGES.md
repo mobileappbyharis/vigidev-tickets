@@ -81,7 +81,7 @@ Migration complète de **Firebase Hosting → Vercel** avec CI/CD automatique vi
 | Secret | Valeur | Où le trouver |
 |--------|--------|---------------|
 | `VERCEL_TOKEN` | `vrv_xxxx...` | https://vercel.com/account/tokens |
-| `VERCEL_ORG_ID` | `team_xxxx...` ou username | https://api.vercel.com/v2/teams (avec token) |
+| `VERCEL_ORG_ID` | `team_lf1DbQXhLsC49vm5h12ZussN` ✅ | https://api.vercel.com/v2/teams |
 | `VERCEL_PROJECT_ID` | `prj_GJOuzLmBDzFZciMDbmAYKjRQmqrO` ✅ | Dashboard Vercel → Settings |
 
 ### Credentials Supabase (2)

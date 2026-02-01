@@ -54,7 +54,7 @@ Cherche `"slug"` ou `"id"` dans la réponse. Ça ressemblera à :
 **À ajouter dans GitHub :**
 ```
 Secret name: VERCEL_ORG_ID
-Secret value: team_xxxxxxxxxxxxxxxx (ou ton slug)
+Secret value: team_lf1DbQXhLsC49vm5h12ZussN
 ```
 
 ---

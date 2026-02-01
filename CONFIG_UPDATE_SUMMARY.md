@@ -57,8 +57,8 @@ Tu dois ajouter 5 secrets dans: https://github.com/mobileappbyharis/vigidev-tick
 ### Vercel Credentials (3)
 ```
 VERCEL_TOKEN = vrv_xxxx... (depuis https://vercel.com/account/tokens)
-VERCEL_ORG_ID = team_xxxx... ou username (depuis API ou dashboard)
-VERCEL_PROJECT_ID = prj_GJOuzLmBDzFZciMDbmAYKjRQmqrO ✅ (déjà préfilled)
+VERCEL_ORG_ID = team_lf1DbQXhLsC49vm5h12ZussN ✅
+VERCEL_PROJECT_ID = prj_GJOuzLmBDzFZciMDbmAYKjRQmqrO ✅
 ```
 
 ### Supabase Credentials (2)
