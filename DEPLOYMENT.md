@@ -48,10 +48,13 @@ Le fichier `firebase.json` est déjà configuré avec :
 4. Add these environment variables for build process:
 
 ```env
-NEXT_PUBLIC_SUPABASE_URL=https://tzmilnltvvtsvdmrkhin.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-NEXT_PUBLIC_APP_URL=https://your-firebase-project.web.app (or custom domain)
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL=https://bgnzfhjsvldgejddzqtf.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJnbnpmaGpzdmxkZ2VqZGR6cXRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk3NzY1MDMsImV4cCI6MjA4NTM1MjUwM30.ybXf98scocjBI0nqORsQQyqEoyOfAYUpo_k1Hd5GYwE
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJnbnpmaGpzdmxkZ2VqZGR6cXRmIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2OTc3NjUwMywiZXhwIjoyMDg1MzUyNTAzfQ.YcYp1yrzsIjrWCS83qNB-Xeza_nsNzBN2vEQ7BszT8k
+
+# Firebase/GCP Configuration
+NEXT_PUBLIC_APP_URL=https://navi-f913a.web.app (or custom domain)
 RESEND_API_KEY=re_xxxxx (optionnel, ajouter après setup Resend)
 ```
 

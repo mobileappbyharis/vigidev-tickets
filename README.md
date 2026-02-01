@@ -19,9 +19,10 @@ Plateforme SaaS moderne pour la gestion de tickets support de **Vigidev**, entre
 Frontend        : Next.js 14 (App Router) + TypeScript + Tailwind CSS v4
 Backend         : Supabase (PostgreSQL + Auth + Realtime + Storage)
 Email           : Resend (via Supabase Edge Functions)
-Hosting         : Google Cloud Run
-Database        : PostgreSQL (Supabase Cloud)
-Authentication  : Supabase Auth + SSR Cookies
+Hosting         : Firebase Hosting (GCP Platform - navi-f913a)
+Database        : PostgreSQL (Supabase Cloud - bgnzfhjsvldgejddzqtf)
+Authentication  : Supabase Auth + SSR Middleware
+GCP Project     : navi-f913a (824692790883)
 ```
 
 ## 🚀 Démarrage Local
@@ -35,7 +36,7 @@ Authentication  : Supabase Auth + SSR Cookies
 
 ```bash
 # Clone le repo
-git clone https://github.com/Zie619/vigidev-tickets.git
+git clone https://github.com/mobileappbyharis/vigidev-tickets.git
 cd vigidev-tickets
 
 # Installe les dépendances
