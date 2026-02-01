@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { User } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabase';
 import { useToast } from '@/hooks/useToast';
 
@@ -9,7 +10,7 @@ export default function SetupPage() {
   const router = useRouter();
   const { success, error } = useToast();
   const [isLoading, setIsLoading] = useState(true);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const createProfile = async () => {
@@ -82,7 +83,7 @@ export default function SetupPage() {
     };
 
     createProfile();
-  }, []);
+  }, [error, success, router]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 px-4">
